@@ -5,7 +5,7 @@ import setuptools
 _here = pathlib.Path(__file__).resolve().parent
 
 
-name = 'sympytorch'
+name = 'sympy2jax'
 
 # for simplicity we actually store the version in the __version__ attribute in the source
 with open(_here / name / '__init__.py') as f:
@@ -15,16 +15,16 @@ with open(_here / name / '__init__.py') as f:
     else:
         raise RuntimeError("Unable to find __version__ string.")
 
-author = 'Patrick Kidger'
+author = 'Miles Cranmer'
 
-author_email = 'contact@kidger.site'
+author_email = 'miles.cranmer@gmail.com'
 
-description = "Turning SymPy expressions into PyTorch modules."
+description = "Turning SymPy expressions into JAX functions."
 
 with open(_here / 'README.md', 'r') as f:
     readme = f.read()
 
-url = "https://github.com/patrick-kidger/sympytorch"
+url = "https://github.com/MilesCranmer/sympy2jax"
 
 license = "Apache-2.0"
 
@@ -42,7 +42,7 @@ classifiers = ["Development Status :: 3 - Alpha",
 
 python_requires = "~=3.8"
 
-install_requires = ['torch>=1.7.0', 'sympy>=1.7.1']
+install_requires = ['jax>=0.2.0', 'sympy>=1.7.1']
 
 setuptools.setup(name=name,
                  version=version,
