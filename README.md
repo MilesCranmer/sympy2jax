@@ -2,7 +2,8 @@
 
 Turn SymPy expressions into parametrized, differentiable, vectorizable, JAX functions.
 
-All SymPy floats become trainable parameters. All SymPy symbols are inputs to the Module.
+All SymPy floats become trainable input parameters.
+SymPy symbols become columns of a passed matrix.
 
 ## Installation
 
