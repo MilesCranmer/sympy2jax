@@ -2,6 +2,7 @@ import functools as ft
 import sympy
 import jax
 from jax import numpy as jnp
+from jax.scipy import special as jsp
 
 def _reduce(fn):
     def fn_(*args):
@@ -38,17 +39,12 @@ _func_lookup = {
     sympy.asinh: "jnp.asinh",
     sympy.tanh: "jnp.tanh",
     sympy.atanh: "jnp.atanh",
-    sympy.Pow: "jnp.pow",
+    sympy.Pow: "jnp.power",
     sympy.re: "jnp.real",
     sympy.im: "jnp.imag",
     sympy.arg: "jnp.angle",
     # Note: May raise error for ints and complexes
-    sympy.erf: "jnp.erf",
-    sympy.loggamma: "jnp.lgamma",
-    sympy.Eq: "jnp.eq",
-    sympy.Ne: "jnp.ne",
-    sympy.StrictGreaterThan: "jnp.gt",
-    sympy.StrictLessThan: "jnp.lt",
+    sympy.erf: "jsp.erf",
     sympy.LessThan: "jnp.le",
     sympy.GreaterThan: "jnp.ge",
     sympy.And: "jnp.logical_and",
