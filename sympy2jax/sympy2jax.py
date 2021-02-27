@@ -72,13 +72,10 @@ def sympy2jaxtext(expr, parameters, symbols_in):
         else:
             return f'{_func}({", ".join(args)})'
 
-# {', '.join([symbol.name for symbol in symbols_in])}
-
 def sympy2jax(equation, symbols_in):
-    """Returns a function which takes an input scalar, and a list of arguments:
-        f(x, parameters)
-
-    where the parameters appear in the JAX equation
+    """Returns a function which takes an input matrix, and a list of arguments:
+            f(X, parameters)
+    where the parameters appear in the JAX equation.
     """
     parameters = []
     functional_form_text = sympy2jaxtext(equation, parameters, symbols_in)
