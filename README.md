@@ -18,7 +18,7 @@ import sympy
 from sympy import symbols
 import jax
 import jax.numpy as jnp
-from jax import jacobian, random
+from jax import random
 from sympy2jax import sympy2jax
 ```
 
@@ -44,16 +44,43 @@ and take gradients.
 Let's generate some JAX data to pass:
 ```python
 key = random.PRNGKey(0)
-X = random.normal(key, (1000, 2))
+X = random.normal(key, (10, 2))
 ```
 
 We can call the function with:
 ```python
 f(X, params)
+
+#> DeviceArray([-2.6080756 ,  0.72633684, -6.7557726 , -0.2963162 ,
+#                6.6014843 ,  5.032483  , -0.810931  ,  4.2520013 ,
+#                3.5427954 , -2.7479894 ], dtype=float32)
 ```
 
-We can take gradients like so:
+We can take gradients with respect
+to the parameters for each row with JAX
+gradient parameters now:
 ```python
-jac_f = jacobian(f, argnums=1)
+jac_f = jax.jacobian(f, argnums=1)
 jac_f(X, params)
+
+#> DeviceArray([[ 0.49364874, -0.9692889 ],
+#               [ 0.8283714 , -0.0318858 ],
+#               [-0.7447336 , -1.8784496 ],
+#               [ 0.70755106, -0.3137085 ],
+#               [ 0.944834  ,  1.767703  ],
+#               [ 0.51673377,  1.4111717 ],
+#               [ 0.87347716, -0.52637756],
+#               [ 0.8760679 ,  1.0549792 ],
+#               [ 0.9961824 ,  0.79581654],
+#               [-0.88465923, -0.5822907 ]], dtype=float32)
+```
+
+We can also JIT-compile our function:
+```python
+compiled_f = jax.jit(f)
+compiled_f(X, params)
+
+#> DeviceArray([-2.6080756 ,  0.72633684, -6.7557726 , -0.2963162 ,
+#                6.6014843 ,  5.032483  , -0.810931  ,  4.2520013 ,
+#                3.5427954 , -2.7479894 ], dtype=float32)
 ```
