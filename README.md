@@ -17,12 +17,42 @@ import sympy
 from sympy import symbols
 import jax
 import jax.numpy as jnp
+from jax import jacobian, random
 from sympy2jax import sympy2jax
+```
 
-x, y, z = symbols('x y z')
-cosxyz = 3.2 * sympy.cos(x + y + z)
-equation = cosxyz
-f, parameters = sympy2jax(cosxyz, [x, y, z])
-X = jnp.ones((1000, 3))
-f(X, parameters)
+Let's create a functionin SymPy:
+```python
+x, y = symbols('x y')
+cosx = 1.0 * sympy.cos(x) + 3.2 * y
+```
+Let's get the JAX version. We pass the equation, and
+the symbols required.
+```python
+f, params = sympy2jax(cosx, [x, y])
+```
+The order you supply the symbols is the same order
+you should supply the features when calling
+the function `f` (shape `[nrows, nfeatures]`).
+In this case, features=2 for x and y.
+The `params` in this case will be
+`jnp.array([1.0, 3.2])`. You pass these parameters
+when calling the function, which will let you change them
+and take gradients.
+
+Let's generate some JAX data to pass:
+```python
+key = random.PRNGKey(0)
+X = random.normal(key, (1000, 2))
+```
+
+We can call the function with:
+```python
+f(X, params)
+```
+
+We can take gradients like so:
+```python
+jac_f = jacobian(f, argnums=1)
+jac_f(X, params)
 ```
