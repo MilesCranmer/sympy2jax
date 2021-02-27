@@ -22,7 +22,7 @@ from jax import random
 from sympy2jax import sympy2jax
 ```
 
-Let's create a functionin SymPy:
+Let's create a function in SymPy:
 ```python
 x, y = symbols('x y')
 cosx = 1.0 * sympy.cos(x) + 3.2 * y

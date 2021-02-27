@@ -31,3 +31,8 @@ def test_multiple():
     true = 1.0 * jnp.cos(X[:, 0]) - 3.2 * jnp.abs(X[:, 1])**X[:, 2]
     f, params = sympy2jax(cosxyz, [x, y, z])
     assert jnp.all(jnp.isclose(f(X, params), true)).item()
+
+def main():
+    test_example()
+    test_grad()
+    test_multiple()
