@@ -1,6 +1,7 @@
 import functools as ft
 import sympy
-import torch
+import jax
+from jax import numpy as jnp
 
 def _reduce(fn):
     def fn_(*args):
@@ -57,17 +58,17 @@ _func_lookup = {
     sympy.Min: "jnp.min",
 }
 
-def sympy2jaxtext(equation, parameters):
+def sympy2jaxtext(expr, parameters, symbols_in):
     if issubclass(expr.func, sympy.Float):
         parameters.append(float(expr))
         return f"parameters[{len(parameters) - 1}]"
     elif issubclass(expr.func, sympy.Integer):
         return "{int(expr)}"
     elif issubclass(expr.func, sympy.Symbol):
-        return f"{expr.name}"
+        return f"X[:, {[i for i in range(len(symbols_in)) if symbols_in[i] == expr][0]}]"
     else:
         _func = _func_lookup[expr.func]
-        args = [sympy2jaxtext(arg, parameters) for arg in expr.args]
+        args = [sympy2jaxtext(arg, parameters, symbols_in) for arg in expr.args]
         if _func == MUL:
             return ' * '.join(['(' + arg + ')' for arg in args])
         elif _func == ADD:
@@ -75,17 +76,20 @@ def sympy2jaxtext(equation, parameters):
         else:
             return f'{_func}({", ".join(args)})'
 
+# {', '.join([symbol.name for symbol in symbols_in])}
 
-def sympy2jax(equation, symbols):
+def sympy2jax(equation, symbols_in):
     """Returns a function which takes an input scalar, and a list of arguments:
         f(x, parameters)
 
     where the parameters appear in the JAX equation
     """
     parameters = []
-    functional_form_text = sympy2jaxtext(equation, parameters)
-    text = f"def f({', '.join([symbol.name for symbol in symbols])}, parameters):\n"
-    text *= "\treturn "
-    text *= functional_form_text
-    return eval(text), parameters
+    functional_form_text = sympy2jaxtext(equation, parameters, symbols_in)
+    text = f"def f(X, parameters):\n"
+    text += "    return "
+    text += functional_form_text
+    ldict = {}
+    exec(text, globals(), ldict)
+    return ldict['f'], jnp.array(parameters)
 

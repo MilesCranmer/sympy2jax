@@ -13,18 +13,16 @@ pip install git+https://github.com/MilesCranmer/sympy2jax.git
 ## Example
 
 ```python
-import sympy, torch, sympytorch
+import sympy
+from sympy import symbols
+import jax
+import jax.numpy as jnp
+from sympy2jax import sympy2jax
 
-x = sympy.symbols('x_name')
-cosx = 1.0 * sympy.cos(x)
-sinx = 2.0 * sympy.sin(x)
-mod = sympytorch.SymPyModule(expressions=[cosx, sinx])
-
-x_ = torch.rand(3)
-out = mod(x_name=x_)  # out has shape (3, 2)
-
-assert torch.equal(out[:, 0], x_.cos())
-assert torch.equal(out[:, 1], 2 * x_.sin())
-assert out.requires_grad  # from the two Parameters initialised as 1.0 and 2.0
-assert {x.item() for x in mod.parameters()} == {1.0, 2.0}
+x, y, z = symbols('x y z')
+cosxyz = 3.2 * sympy.cos(x + y + z)
+equation = cosxyz
+f, parameters = sympy2jax(cosxyz, [x, y, z])
+X = jnp.ones((1000, 3))
+f(X, parameters)
 ```
