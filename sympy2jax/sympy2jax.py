@@ -59,7 +59,7 @@ def sympy2jaxtext(expr, parameters, symbols_in):
         parameters.append(float(expr))
         return f"parameters[{len(parameters) - 1}]"
     elif issubclass(expr.func, sympy.Integer):
-        return "{int(expr)}"
+        return f"{int(expr)}"
     elif issubclass(expr.func, sympy.Symbol):
         return f"X[:, {[i for i in range(len(symbols_in)) if symbols_in[i] == expr][0]}]"
     else:
@@ -145,10 +145,10 @@ def sympy2jax(equation, symbols_in):
     """
     parameters = []
     functional_form_text = sympy2jaxtext(equation, parameters, symbols_in)
-    hash_string = 'A' + str(hash([equation, symbols_in]))
+    hash_string = 'A_' + str(abs(hash(str(equation) + str(symbols_in))))
     text = f"def {hash_string}(X, parameters):\n"
     text += "    return "
     text += functional_form_text
     ldict = {}
     exec(text, globals(), ldict)
-    return ldict['f'], jnp.array(parameters)
+    return ldict[hash_string], jnp.array(parameters)
