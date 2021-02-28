@@ -1,5 +1,5 @@
 # sympy2jax
-
+[![.github/workflows/CI.yml](https://github.com/MilesCranmer/sympy2jax/actions/workflows/CI.yml/badge.svg)](https://github.com/MilesCranmer/sympy2jax/actions/workflows/CI.yml)
 Turn SymPy expressions into parametrized, differentiable, vectorizable, JAX functions.
 
 All SymPy floats become trainable input parameters.
