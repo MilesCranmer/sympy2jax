@@ -40,7 +40,6 @@ _jnp_func_lookup = {
     sympy.Pow: "jnp.power",
     sympy.re: "jnp.real",
     sympy.im: "jnp.imag",
-    sympy.arg: "jnp.angle",
     # Note: May raise error for ints and complexes
     sympy.erf: "jsp.erf",
     sympy.erfc: "jsp.erfc",
@@ -49,9 +48,9 @@ _jnp_func_lookup = {
     sympy.And: "jnp.logical_and",
     sympy.Or: "jnp.logical_or",
     sympy.Not: "jnp.logical_not",
-    sympy.Max: "jnp.max",
-    sympy.Min: "jnp.min",
-    sympy.Mod: "jnp.mod",
+    sympy.Max: "jnp.fmax",
+    sympy.Min: "jnp.fmin",
+    sympy.Mod: "jnp.fmod",
 }
 
 def sympy2jaxtext(expr, parameters, symbols_in):
@@ -63,7 +62,10 @@ def sympy2jaxtext(expr, parameters, symbols_in):
     elif issubclass(expr.func, sympy.Symbol):
         return f"X[:, {[i for i in range(len(symbols_in)) if symbols_in[i] == expr][0]}]"
     else:
-        _func = _jnp_func_lookup[expr.func]
+        try:
+            _func = _jnp_func_lookup[expr.func]
+        except KeyError:
+            raise KeyError("Function not found in sympy2jax.sympy2jax._jnp_func_lookup; please add it.")
         args = [sympy2jaxtext(arg, parameters, symbols_in) for arg in expr.args]
         if _func == MUL:
             return ' * '.join(['(' + arg + ')' for arg in args])
