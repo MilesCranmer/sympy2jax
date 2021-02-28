@@ -25,12 +25,12 @@ from sympy2jax import sympy2jax
 Let's create an expression in SymPy:
 ```python
 x, y = symbols('x y')
-cosx = 1.0 * sympy.cos(x) + 3.2 * y
+expression = 1.0 * sympy.cos(x) + 3.2 * y
 ```
 Let's get the JAX version. We pass the equation, and
 the symbols required.
 ```python
-f, params = sympy2jax(cosx, [x, y])
+f, params = sympy2jax(expression, [x, y])
 ```
 The order you supply the symbols is the same order
 you should supply the features when calling
