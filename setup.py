@@ -40,8 +40,6 @@ classifiers = ["Development Status :: 3 - Alpha",
                "Topic :: Scientific/Engineering :: Information Analysis",
                "Topic :: Scientific/Engineering :: Mathematics"]
 
-python_requires = "~=3.8"
-
 install_requires = ['jax>=0.2.0', 'sympy>=1.7.1']
 
 setuptools.setup(name=name,
@@ -56,6 +54,5 @@ setuptools.setup(name=name,
                  license=license,
                  classifiers=classifiers,
                  zip_safe=False,
-                 python_requires=python_requires,
                  install_requires=install_requires,
                  packages=[name])
