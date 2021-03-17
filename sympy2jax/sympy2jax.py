@@ -60,7 +60,13 @@ def sympy2jaxtext(expr, parameters, symbols_in):
     elif issubclass(expr.func, sympy.Integer):
         return f"{int(expr)}"
     elif issubclass(expr.func, sympy.Symbol):
-        return f"X[:, {[i for i in range(len(symbols_in)) if symbols_in[i] == expr][0]}]"
+        matching_symbols = [i for i in range(len(symbols_in)) if symbols_in[i] == expr]
+        if len(matching_symbols) == 0:
+            raise ValueError(f"The expression symbol {expr} was not found in user-passed `symbols_in`: {symbols_in}.")
+        elif len(matching_symbols) > 1:
+            raise ValueError(f"The expression symbol {expr} was found more than once in user-passed `symbols_in`: {symbols_in}.")
+
+        return f"X[:, {matching_symbols[0]}]"
     else:
         try:
             _func = _jnp_func_lookup[expr.func]
